@@ -23,7 +23,10 @@ export class UsersService {
   findAll(): User[] {
     return this.users;
   }
-
+  findById(userId: string): Partial<User> {
+    const { password, ...user } = this.users.find(user => user.id === userId);
+    return user;
+  }
   findOne(email: string): User {
     return this.users.find(user => user.email === email);
   }
