@@ -1,33 +1,36 @@
 import { Injectable } from '@nestjs/common';
-import { User } from './users.model';
+import { InjectModel } from '@nestjs/mongoose';
+import { User } from './user.schema';
+import { Model } from 'mongoose';
+import { CreateUserDto } from './dto/create-user.dto';
+const omittedField = '-password -__v';
 
 @Injectable()
 export class UsersService {
-  users: User[] = [];
-  constructor() {
-    this.users = [
-      {
-        username: 'userone',
-        email: 'user1@mail.com',
-        password: '1234',
-        id: '1',
-      },
-      {
-        username: 'usertwo',
-        email: 'user2@mail.com',
-        password: '1234',
-        id: '2',
-      },
-    ];
-  }
-  findAll(): User[] {
-    return this.users;
-  }
-  findById(userId: string): Partial<User> {
-    const { password, ...user } = this.users.find(user => user.id === userId);
+  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+
+  async create(createUserDto: CreateUserDto): Promise<Partial<User>> {
+    const { password, ...user } = await new this.userModel(
+      createUserDto,
+    ).save();
     return user;
   }
-  findOne(email: string): User {
-    return this.users.find(user => user.email === email);
+
+  async findAll(): Promise<User[]> {
+    return await this.userModel
+      .find()
+      .select(omittedField)
+      .exec();
+  }
+  async findById(userId: string): Promise<User> {
+    const user = this.userModel
+      .findById(userId)
+      .select(omittedField)
+      .exec();
+    return user;
+  }
+  async findOne(email: string): Promise<User> {
+    const user = this.userModel.findOne({ email });
+    return user;
   }
 }
