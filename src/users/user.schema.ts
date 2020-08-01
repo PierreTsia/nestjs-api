@@ -1,6 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { hashPassword, createAvatar } from './users.helpers';
+enum DocumentMethods {
+  Save = 'save',
+}
 
 @Schema()
 export class User extends Document {
@@ -22,13 +25,13 @@ export class User extends Document {
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
-UserSchema.pre<User>('save', async function(next) {
+UserSchema.pre<User>(DocumentMethods.Save, async function(next) {
   this.avatar = await createAvatar(`${this.handle}`);
   next();
 });
 
 UserSchema.pre<User>(
-  'save',
+  DocumentMethods.Save,
   async function(next) {
     this.password = await hashPassword(this.password);
     next();
