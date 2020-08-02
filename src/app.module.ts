@@ -14,6 +14,8 @@ import { dbConstants } from './db.constants';
     MongooseModule.forRoot(dbConstants.mongo_uri),
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql',
+      playground: true,
+      introspection: true,
       context: ({ req }) => ({ req }),
     }),
     UsersModule,
