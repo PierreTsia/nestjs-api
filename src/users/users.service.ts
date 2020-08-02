@@ -1,8 +1,13 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './user.schema';
 import { Model } from 'mongoose';
-import { UpdateUsersDto, CreateUserDto, DeleteUserDto } from './dto/users.dto';
+import { CreateUserDto, DeleteUserDto, UpdateUsersDto } from './dto/users.dto';
+import { notFoundMessage, QueryBy } from './users.helpers';
 
 const omittedField = '-password -__v';
 
@@ -22,33 +27,43 @@ export class UsersService {
       .exec();
   }
   async findById(userId: string): Promise<User> {
-    const user = this.userModel
+    const user = await this.userModel
       .findById(userId)
       .select(omittedField)
       .exec();
+    if (!user) {
+      throw new NotFoundException(notFoundMessage(QueryBy.Id, userId));
+    }
     return user;
   }
 
   async findOne(email: string): Promise<User> {
-    const user = this.userModel.findOne({ email }).exec();
+    const user = await this.userModel.findOne({ email }).exec();
+    if (!user) {
+      throw new NotFoundException(notFoundMessage(QueryBy.Email, email));
+    }
     return user;
   }
 
   async findByHandle(handle: string): Promise<User> {
-    const user = this.userModel
+    const user = await this.userModel
       .findOne({ handle })
       .select(omittedField)
       .exec();
+    if (!user) {
+      throw new NotFoundException(notFoundMessage(QueryBy.Handle, handle));
+    }
     return user;
   }
 
   async update(updateUserDto: UpdateUsersDto, requestUserId): Promise<User> {
     const { userId, ...fields } = updateUserDto;
+
     if (requestUserId !== userId) {
       throw new UnauthorizedException();
     }
 
-    const updatedUser = this.userModel
+    const updatedUser = await this.userModel
       .findByIdAndUpdate(
         userId,
         { ...fields },
@@ -56,6 +71,10 @@ export class UsersService {
       )
       .select(omittedField)
       .exec();
+
+    if (!updatedUser) {
+      throw new NotFoundException();
+    }
     return updatedUser;
   }
 
@@ -67,6 +86,11 @@ export class UsersService {
       .findByIdAndRemove(deleteUserDto.userId)
       .select(omittedField)
       .exec();
+    if (!deletedUser) {
+      throw new NotFoundException(
+        notFoundMessage(QueryBy.Id, deleteUserDto.userId),
+      );
+    }
     return deletedUser;
   }
 }

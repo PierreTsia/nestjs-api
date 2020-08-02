@@ -5,12 +5,17 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { GraphQLModule } from '@nestjs/graphql';
 import { dbConstants } from './db.constants';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRoot(dbConstants.mongo_uri),
+    GraphQLModule.forRoot({
+      autoSchemaFile: 'schema.gql',
+      context: ({ req }) => ({ req }),
+    }),
     UsersModule,
     AuthModule,
   ],

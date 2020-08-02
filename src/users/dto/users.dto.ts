@@ -3,48 +3,77 @@ import {
   IsMongoId,
   IsNotEmpty,
   IsOptional,
-  IsAlphanumeric,
-  IsLowercase,
   Length,
   Matches,
 } from 'class-validator';
 import { passwordFormat, handleFormat } from '../users.helpers';
+import { Field, ID, InputType, ObjectType } from '@nestjs/graphql';
 
+@ObjectType()
+export class GqlUser {
+  @Field(type => ID)
+  id: string;
+
+  @Field()
+  username: string;
+
+  @Field()
+  handle: string;
+
+  @Field()
+  avatar: string;
+
+  @Field()
+  email: string;
+}
+
+@InputType()
 export class CreateUserDto {
+  @Field()
   @IsEmail()
   email: string;
 
+  @Field()
   @Matches(passwordFormat.rule, { message: passwordFormat.message })
   password: string;
 
+  @Field()
   @Matches(handleFormat.rule, { message: handleFormat.message })
   handle: string;
 
+  @Field()
   @IsNotEmpty()
   @Length(3, 25)
   username: string;
 }
 
+@InputType()
 export class UpdateUsersDto {
   @IsMongoId()
+  @Field(type => ID)
   userId: string;
 
   @IsEmail()
   @IsOptional()
-  email: string;
+  @Field({ nullable: true })
+  email?: string;
 
   @IsOptional()
   @Matches(handleFormat.rule, { message: handleFormat.message })
   @Length(3, 25)
-  handle: string;
+  @Field({ nullable: true })
+  handle?: string;
 
   @IsNotEmpty()
   @IsOptional()
   @Length(3, 25)
-  username: string;
+  @Field({ nullable: true })
+  username?: string;
 }
 
+@InputType()
 export class DeleteUserDto {
   @IsMongoId()
+  @Field(type => ID)
   userId: string;
 }

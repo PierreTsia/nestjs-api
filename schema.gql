@@ -1,0 +1,42 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type GqlUser {
+  id: ID!
+  username: String!
+  handle: String!
+  avatar: String!
+  email: String!
+}
+
+type Query {
+  whoAmI: GqlUser!
+  users: [GqlUser!]!
+  userByHandle(handle: String!): GqlUser!
+  userById(id: String!): GqlUser!
+}
+
+type Mutation {
+  createUser(createUserInput: CreateUserDto!): GqlUser!
+  updateUser(updateUserInput: UpdateUsersDto!): GqlUser!
+  deleteUser(deleteUserInput: DeleteUserDto!): GqlUser!
+}
+
+input CreateUserDto {
+  email: String!
+  password: String!
+  handle: String!
+  username: String!
+}
+
+input UpdateUsersDto {
+  userId: ID!
+  email: String
+  handle: String
+  username: String
+}
+
+input DeleteUserDto {
+  userId: ID!
+}
