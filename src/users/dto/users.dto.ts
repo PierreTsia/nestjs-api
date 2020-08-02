@@ -43,3 +43,8 @@ export class UpdateUsersDto {
   @Length(3, 25)
   username: string;
 }
+
+export class DeleteUserDto {
+  @IsMongoId()
+  userId: string;
+}

@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './user.schema';
 import { Model } from 'mongoose';
-import { UpdateUsersDto, CreateUserDto } from './dto/users.dto';
+import { UpdateUsersDto, CreateUserDto, DeleteUserDto } from './dto/users.dto';
 
 const omittedField = '-password -__v';
 
@@ -42,9 +42,9 @@ export class UsersService {
     return user;
   }
 
-  async update(updateUserDto: UpdateUsersDto, reqUserId): Promise<User> {
+  async update(updateUserDto: UpdateUsersDto, requestUserId): Promise<User> {
     const { userId, ...fields } = updateUserDto;
-    if (reqUserId !== userId) {
+    if (requestUserId !== userId) {
       throw new UnauthorizedException();
     }
 
@@ -57,5 +57,16 @@ export class UsersService {
       .select(omittedField)
       .exec();
     return updatedUser;
+  }
+
+  async delete(deleteUserDto: DeleteUserDto, requestUserId): Promise<User> {
+    if (requestUserId !== deleteUserDto.userId) {
+      throw new UnauthorizedException();
+    }
+    const deletedUser = await this.userModel
+      .findByIdAndRemove(deleteUserDto.userId)
+      .select(omittedField)
+      .exec();
+    return deletedUser;
   }
 }
