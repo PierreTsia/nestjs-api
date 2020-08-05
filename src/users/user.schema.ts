@@ -1,9 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { hashPassword, createAvatar } from './users.helpers';
-enum DocumentMethods {
-  Save = 'save',
-}
+import { DocumentMethods } from '../helpers/types';
 
 @Schema()
 export class User extends Document {

@@ -7,8 +7,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User } from './user.schema';
 import { Model } from 'mongoose';
 import { CreateUserDto, DeleteUserDto, UpdateUsersDto } from './dto/users.dto';
-import { notFoundMessage, QueryBy } from './users.helpers';
-
+import {
+  notFoundMessage,
+  QueryBy,
+  SearchedEntity,
+} from './../helpers/not-found.helpers';
 const omittedField = '-password -__v';
 
 @Injectable()
@@ -32,7 +35,9 @@ export class UsersService {
       .select(omittedField)
       .exec();
     if (!user) {
-      throw new NotFoundException(notFoundMessage(QueryBy.Id, userId));
+      throw new NotFoundException(
+        notFoundMessage(SearchedEntity.User, QueryBy.Id, userId),
+      );
     }
     return user;
   }
@@ -40,7 +45,9 @@ export class UsersService {
   async findOne(email: string): Promise<User> {
     const user = await this.userModel.findOne({ email }).exec();
     if (!user) {
-      throw new NotFoundException(notFoundMessage(QueryBy.Email, email));
+      throw new NotFoundException(
+        notFoundMessage(SearchedEntity.User, QueryBy.Email, email),
+      );
     }
     return user;
   }
@@ -51,7 +58,9 @@ export class UsersService {
       .select(omittedField)
       .exec();
     if (!user) {
-      throw new NotFoundException(notFoundMessage(QueryBy.Handle, handle));
+      throw new NotFoundException(
+        notFoundMessage(SearchedEntity.User, QueryBy.Handle, handle),
+      );
     }
     return user;
   }
@@ -88,7 +97,7 @@ export class UsersService {
       .exec();
     if (!deletedUser) {
       throw new NotFoundException(
-        notFoundMessage(QueryBy.Id, deleteUserDto.userId),
+        notFoundMessage(SearchedEntity.User, QueryBy.Id, deleteUserDto.userId),
       );
     }
     return deletedUser;

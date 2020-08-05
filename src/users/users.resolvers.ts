@@ -1,4 +1,4 @@
-import { Args, Query, Resolver, ID, Mutation } from '@nestjs/graphql';
+import { Args, Query, Resolver,  Mutation } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from '../auth/gql-authguard.guard';

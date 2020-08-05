@@ -10,17 +10,42 @@ type GqlUser {
   email: String!
 }
 
+type GqlEvent {
+  id: ID!
+  creator: GqlUser!
+  title: String!
+  description: String!
+  startDate: String!
+  endDate: String!
+  createdDate: String!
+  public: Boolean!
+  active: Boolean!
+  location: String!
+  attendants: [GqlUser!]!
+}
+
 type Query {
   whoAmI: GqlUser!
   users: [GqlUser!]!
   userByHandle(handle: String!): GqlUser!
   userById(id: String!): GqlUser!
+  events: [GqlEvent!]!
+  eventById(eventId: String!): GqlEvent!
+  eventsByDate(eventDates: EventDatesInput!): [GqlEvent!]!
+}
+
+input EventDatesInput {
+  fromDate: String!
+  toDate: String
 }
 
 type Mutation {
   createUser(createUserInput: CreateUserDto!): GqlUser!
   updateUser(updateUserInput: UpdateUsersDto!): GqlUser!
   deleteUser(deleteUserInput: DeleteUserDto!): GqlUser!
+  createEvent(createEventInput: CreateEventDto!): GqlEvent!
+  deleteEvent(eventId: String!): GqlEvent!
+  updateEvent(updateEventInput: UpdateEventDto!): GqlEvent!
 }
 
 input CreateUserDto {
@@ -39,4 +64,25 @@ input UpdateUsersDto {
 
 input DeleteUserDto {
   userId: ID!
+}
+
+input CreateEventDto {
+  creator: ID!
+  title: String!
+  description: String!
+  startDate: String!
+  endDate: String!
+  public: Boolean!
+  location: String!
+}
+
+input UpdateEventDto {
+  eventId: ID!
+  title: String
+  description: String
+  startDate: String
+  endDate: String
+  public: Boolean
+  active: Boolean
+  location: String
 }

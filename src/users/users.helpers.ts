@@ -1,11 +1,7 @@
 import { Md5 } from 'ts-md5';
 import * as bcrypt from 'bcrypt';
 
-export enum QueryBy {
-  Email = 'email',
-  Handle = 'handle',
-  Id = 'id',
-}
+
 
 export const hashPassword = async (clearPwd: string, saltRounds = 10) =>
   bcrypt.hash(clearPwd, saltRounds);
@@ -15,9 +11,7 @@ export const createAvatar = (handle: string, size = '100', format = 'png') => {
   return `${adorable}${size}/${Md5.hashStr(handle)}.${format}`;
 };
 
-export const notFoundMessage = (queryBy: QueryBy, query: string): string => {
-  return `User not found with ${queryBy} ${query}`;
-};
+
 
 export const passwordFormat = {
   rule: /(?=(.*[0-9]))((?=.*[A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z]))^.{8,}$/,
