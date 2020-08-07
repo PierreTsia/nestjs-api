@@ -5,7 +5,7 @@ import { User } from '../users/user.schema';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from '../users/dto/users.dto';
 
-type AuthPayload = { user: User; access_token: string };
+type AuthPayload = { user: Partial<User>; access_token: string };
 
 @Injectable()
 export class AuthService {
@@ -25,7 +25,11 @@ export class AuthService {
 
   async login(user: User): Promise<AuthPayload> {
     const payload = { email: user.email, sub: user.id };
-    return { user, access_token: this.jwtService.sign(payload) };
+    const { email, handle, avatar, id, username } = user;
+    return {
+      user: { email, handle, avatar, id, username },
+      access_token: this.jwtService.sign(payload),
+    };
   }
 
   async signUp(createUserDto: CreateUserDto): Promise<AuthPayload> {
