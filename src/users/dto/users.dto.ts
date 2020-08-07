@@ -5,6 +5,7 @@ import {
   IsOptional,
   Length,
   Matches,
+  NotContains,
 } from 'class-validator';
 import { passwordFormat, handleFormat } from '../users.helpers';
 import { Field, ID, InputType, ObjectType } from '@nestjs/graphql';
@@ -38,6 +39,7 @@ export class CreateUserDto {
   password: string;
 
   @Field()
+  @NotContains(' ', { message: 'No whitespaces allowed in handle field' })
   @Matches(handleFormat.rule, { message: handleFormat.message })
   handle: string;
 
@@ -60,6 +62,7 @@ export class UpdateUsersDto {
 
   @IsOptional()
   @Matches(handleFormat.rule, { message: handleFormat.message })
+  @NotContains(' ', { message: 'No whitespaces allowed in handle field' })
   @Length(3, 25)
   @Field({ nullable: true })
   handle?: string;
