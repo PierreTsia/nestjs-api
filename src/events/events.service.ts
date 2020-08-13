@@ -25,6 +25,7 @@ export class EventsService {
     return this.eventModel
       .find()
       .populate([subFields.attendants, subFields.creator])
+      .sort({ startDate: 1 })
       .exec();
   }
 
