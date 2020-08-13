@@ -66,7 +66,7 @@ export class CreateEventDto {
   creator: GqlUser;
 
   @Field()
-  @Length(5, 30)
+  @Length(5, 100)
   title: string;
 
   @Field()
@@ -109,7 +109,7 @@ export class UpdateEventDto {
 
   @Field({ nullable: true })
   @IsOptional()
-  @Length(5, 30)
+  @Length(5, 100)
   title: string;
 
   @Field({ nullable: true })
